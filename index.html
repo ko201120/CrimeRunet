@@ -3,318 +3,226 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Crime_Runet">
-    <meta name="theme-color" content="#000">
-    <title>CRIME_RUNET</title>
+    <title>CrimeMyth</title>
     <style>
         :root {
-            --bg:#000;--c1:#080808;--c2:#0f0f0f;--c3:#161616;
-            --t:#999;--tw:#fff;--border:#1c1c1c;--hover:#2a2a2a;
-            --font:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;
+            --bg: #000;
+            --c1: #080808;
+            --c2: #0f0f0f;
+            --c3: #161616;
+            --t: #999;
+            --tw: #fff;
+            --border: #1c1c1c;
+            --hover: #2a2a2a;
         }
-        *{margin:0;padding:0;box-sizing:border-box}
-        html{scroll-behavior:smooth}
-        body{
-            background:var(--bg);color:var(--t);font-family:var(--font);
-            overflow-x:hidden;min-height:100vh;
-            -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
-            text-rendering:optimizeLegibility;
-        }
-        @font-face{font-family:'Inter';src:local('Inter'),local('Inter Regular');font-display:swap}
-
-        #preloader{
-            position:fixed;inset:0;background:#000;z-index:99999;
-            display:flex;flex-direction:column;align-items:center;justify-content:center;
-            transition:opacity .5s ease,visibility .5s ease;gap:40px;
-        }
-        #preloader.hidden{opacity:0;visibility:hidden;pointer-events:none}
-        .rings{position:relative;width:100px;height:100px}
-        .ring{position:absolute;border-radius:50%;border:2.5px solid transparent;will-change:transform}
-        .ring:nth-child(1){inset:0;border-top-color:#444;animation:r1 1.4s linear infinite}
-        .ring:nth-child(2){inset:10px;border-right-color:#555;animation:r2 1.8s linear infinite}
-        .ring:nth-child(3){inset:20px;border-bottom-color:#666;animation:r3 2.2s linear infinite}
-        .ring:nth-child(4){inset:30px;border-left-color:#777;animation:r4 2.6s linear infinite}
-        @keyframes r1{to{transform:rotate(360deg)}}
-        @keyframes r2{to{transform:rotate(-360deg)}}
-        @keyframes r3{to{transform:rotate(360deg)}}
-        @keyframes r4{to{transform:rotate(-360deg)}}
-        .center-dot{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
-        .center-dot::after{content:'';width:12px;height:12px;background:#fff;border-radius:50%;will-change:transform,opacity;animation:dp 1.8s ease-in-out infinite}
-        @keyframes dp{0%,100%{transform:scale(.5);opacity:.2}50%{transform:scale(2.5);opacity:1}}
-        .preloader-text{color:#666;font-size:14px;letter-spacing:8px;text-transform:uppercase;will-change:opacity;animation:tf 2.5s ease-in-out infinite}
-        @keyframes tf{0%,100%{opacity:.25}50%{opacity:1}}
-        .tea-cup{position:absolute;bottom:55px;font-size:35px;will-change:transform,opacity;animation:tea 4s ease-in-out infinite}
-        @keyframes tea{0%{transform:translateY(0);opacity:.2}40%{opacity:1}100%{transform:translateY(-50px);opacity:0}}
-
-        #bgCanvas{position:fixed;inset:0;z-index:-1;pointer-events:none}
-
-        .fixed-header{
-            position:fixed;top:0;left:0;right:0;z-index:100;
-            text-align:center;padding:16px 20px;
-            background:linear-gradient(180deg,rgba(0,0,0,.95) 0%,rgba(0,0,0,.85) 80%,transparent 100%);
-            border-bottom:1px solid transparent;
-            transition:all .4s cubic-bezier(.16,1,.3,1);
-            pointer-events:none;opacity:0;transform:translateY(-100%);
-            backdrop-filter:blur(10px);
-        }
-        .fixed-header.visible{opacity:1;transform:translateY(0);border-bottom-color:rgba(255,255,255,.04)}
-        .fixed-header h2{font-size:18px;font-weight:800;letter-spacing:6px;color:#fff}
-        .fixed-header .sub{font-size:10px;color:#555;letter-spacing:3px;margin-top:4px}
-        .fixed-header .sub b{color:#777}
-
-        .hdr{
-            text-align:center;padding:100px 20px 65px;position:relative;
-            background:linear-gradient(180deg,rgba(0,0,0,.99),rgba(8,8,8,.96));
-            border-bottom:1px solid var(--border);overflow:hidden;
-        }
-        .hdr::before{
-            content:'';position:absolute;inset:-50%;width:200%;height:200%;
-            background:radial-gradient(circle at 50% 50%,rgba(255,255,255,.008) 0%,transparent 60%);
-            animation:hdrRot 30s linear infinite;
-        }
-        @keyframes hdrRot{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-        .hdr h1{
-            position:relative;z-index:1;
-            font-size:clamp(44px,10vw,68px);font-weight:900;letter-spacing:16px;
-            color:var(--tw);will-change:transform;
-            animation:ti .9s cubic-bezier(.16,1,.3,1) .5s both,tf2 8s ease-in-out 1.6s infinite;
-            text-shadow:0 0 80px rgba(255,255,255,.08),0 0 160px rgba(255,255,255,.04);
-        }
-        @keyframes ti{from{transform:translateY(-50px);opacity:0}to{transform:translateY(0);opacity:1}}
-        @keyframes tf2{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-        .hdr .sub{
-            position:relative;z-index:1;margin-top:20px;
-            color:#666;font-size:15px;letter-spacing:6px;will-change:transform,opacity;
-            animation:si .9s cubic-bezier(.16,1,.3,1) .7s both;
-        }
-        @keyframes si{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
-        .hdr .sub b{color:#999;font-weight:700;transition:color .4s ease}
-        .hdr .sub b:hover{color:#ccc}
-        .hdr .line{
-            position:absolute;bottom:0;left:0;right:0;height:2px;
-            background:linear-gradient(90deg,transparent,#3a3a3a,#5a5a5a,#3a3a3a,transparent);
-            will-change:transform,opacity;animation:li 1.2s ease-out 1s both;
-        }
-        @keyframes li{from{opacity:0;transform:scaleX(0)}to{opacity:1;transform:scaleX(1)}}
-
-        .ctn{max-width:900px;margin:0 auto;padding:45px 20px}
-
-        .crd{
-            background:var(--c1);border:1px solid var(--border);
-            border-radius:26px;padding:35px 30px;margin:22px 0;
-            transition:border-color .35s ease,transform .35s ease,box-shadow .35s ease;will-change:transform,opacity;
-            animation:ci .7s cubic-bezier(.16,1,.3,1) both;
-        }
-        .crd:nth-child(1){animation-delay:.15s}
-        .crd:nth-child(2){animation-delay:.25s}
-        .crd:nth-child(3){animation-delay:.35s}
-        .crd:nth-child(4){animation-delay:.45s}
-        .crd:nth-child(5){animation-delay:.55s}
-        @keyframes ci{from{opacity:0;transform:translateY(50px)}to{opacity:1;transform:translateY(0)}}
-        .crd:hover{border-color:var(--hover);transform:translateY(-5px);box-shadow:0 20px 60px rgba(0,0,0,.6)}
-        .crd h3{
-            color:var(--tw);margin-bottom:22px;padding-bottom:14px;
-            border-bottom:1px solid var(--border);font-size:15px;
-            text-transform:uppercase;letter-spacing:7px;font-weight:600;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: var(--bg);
+            color: var(--t);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            min-height: 100vh;
         }
 
-        .prf{text-align:center;border-color:#2e2e2e}
-        .ava-w{width:140px;height:140px;border-radius:50%;margin:0 auto 24px;position:relative}
-        .ava-w::before{
-            content:'';position:absolute;inset:-5px;border-radius:50%;
-            background:conic-gradient(#2e2e2e,#4a4a4a,#2e2e2e,#4a4a4a,#2e2e2e);will-change:transform;
-            animation:as 8s linear infinite;
-        }
-        @keyframes as{to{transform:rotate(360deg)}}
-        .ava-w::after{
-            content:'';position:absolute;inset:-9px;border-radius:50%;
-            background:conic-gradient(transparent,rgba(255,255,255,.04),transparent,rgba(255,255,255,.04),transparent);
-            will-change:transform;animation:as2 12s linear infinite reverse;
-        }
-        @keyframes as2{to{transform:rotate(360deg)}}
-        .ava-w .ava{width:100%;height:100%;border-radius:50%;overflow:hidden;position:relative;z-index:2;border:3px solid #000}
-        .ava img{width:100%;height:100%;object-fit:cover;filter:grayscale(100%)}
-        .ava .fb{display:none;width:100%;height:100%;background:linear-gradient(135deg,#1e1e1e,#0c0c0c);align-items:center;justify-content:center;font-size:56px;font-weight:900;color:#fff}
-        .prf h2{color:var(--tw);font-size:34px;margin-bottom:8px;font-weight:700}
-        .prf .role{color:#777;font-size:14px;letter-spacing:7px;text-transform:uppercase}
-        .prf .bio{color:#666;margin-top:18px;font-size:14px;line-height:1.8}
+        #bgCanvas { position: fixed; inset: 0; z-index: -1; }
 
-        .g4{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}
-        .st{
-            background:var(--c2);padding:30px 22px;border-radius:18px;
-            border:1px solid var(--border);text-align:center;
-            transition:border-color .3s ease,transform .3s ease,background .3s ease,box-shadow .3s ease;will-change:transform;
+        .header {
+            text-align: center;
+            padding: 80px 20px 50px;
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(180deg, rgba(0,0,0,.97), rgba(5,5,5,.94));
         }
-        .st:hover{border-color:var(--hover);transform:translateY(-6px);background:var(--c3);box-shadow:0 15px 40px rgba(0,0,0,.5)}
-        .st .n{color:var(--tw);font-size:44px;font-weight:900;transition:transform .3s ease}
-        .st:hover .n{transform:scale(1.15)}
-        .st .l{color:#666;font-size:11px;text-transform:uppercase;letter-spacing:4px;margin-top:8px}
+        .header h1 {
+            color: var(--tw);
+            font-size: clamp(36px, 8vw, 54px);
+            font-weight: 900;
+            letter-spacing: 10px;
+        }
+        .header .sub {
+            color: #555;
+            font-size: 13px;
+            letter-spacing: 4px;
+            margin-top: 12px;
+        }
+        .header .sub b { color: #777; }
 
-        .g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
-        .btn{
-            background:var(--c2);border:1px solid var(--border);border-radius:14px;
-            padding:22px 26px;text-decoration:none;display:flex;align-items:center;gap:18px;
-            transition:border-color .3s ease,transform .3s ease,background .3s ease,box-shadow .3s ease;will-change:transform;
-        }
-        .btn:hover{border-color:var(--hover);transform:translateY(-4px);background:var(--c3);box-shadow:0 10px 30px rgba(0,0,0,.5)}
-        .btn:active{transform:scale(.97);transition:transform .1s ease}
-        .btn .ico{
-            width:52px;height:52px;border-radius:12px;
-            background:linear-gradient(135deg,#333,#1e1e1e);
-            display:flex;align-items:center;justify-content:center;
-            font-size:18px;color:#fff;font-weight:700;flex-shrink:0;
-            border:1px solid #3a3a3a;transition:transform .3s ease,border-color .3s ease,box-shadow .3s ease;will-change:transform;
-        }
-        .btn:hover .ico{border-color:#5a5a5a;transform:scale(1.12);box-shadow:0 0 30px rgba(255,255,255,.05)}
-        .btn .inf{flex:1;min-width:0}
-        .btn .nm{color:var(--tw);font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-        .btn .ds{color:#666;font-size:11px;margin-top:4px}
-        .btn .ar{color:#666;font-size:26px;transition:transform .3s ease,color .3s ease;will-change:transform;flex-shrink:0}
-        .btn:hover .ar{transform:translateX(6px);color:#999}
+        .container { max-width: 800px; margin: 0 auto; padding: 30px 16px; }
 
-        .ftr{
-            text-align:center;padding:45px;color:#555;border-top:1px solid var(--border);
-            margin-top:45px;font-size:14px;
+        .card {
+            background: var(--c1);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 26px 22px;
+            margin: 14px 0;
+            transition: border-color .2s, transform .2s;
         }
-        .ftr b{color:#777}
-        .ftr .dm{display:inline-block;margin:20px 0;color:#666;font-size:36px;will-change:transform,opacity;animation:dmp 4s ease-in-out infinite}
-        @keyframes dmp{0%,100%{opacity:.25;transform:scale(.7)}50%{opacity:1;transform:scale(1.4)}}
-
-        ::-webkit-scrollbar{width:5px}
-        ::-webkit-scrollbar-track{background:#080808}
-        ::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
-
-        @media(max-width:500px){
-            .hdr h1{font-size:34px;letter-spacing:10px}
-            .g2{grid-template-columns:1fr}
-            .g4{grid-template-columns:1fr 1fr}
-            .ava-w{width:110px;height:110px}
-            .crd{padding:26px 18px}
+        .card:hover { border-color: var(--hover); transform: translateY(-2px); }
+        .card h3 {
+            color: var(--tw);
+            font-size: 14px;
+            letter-spacing: 4px;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+            text-transform: uppercase;
         }
+
+        .profile { text-align: center; }
+        .ava {
+            width: 100px; height: 100px; border-radius: 50%;
+            background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+            margin: 0 auto 16px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 40px; font-weight: 900; color: #fff;
+            border: 1px solid #333;
+        }
+        .profile h2 { color: var(--tw); font-size: 26px; margin-bottom: 4px; }
+        .profile .role { color: #666; font-size: 12px; letter-spacing: 4px; text-transform: uppercase; }
+        .profile .bio { color: #555; margin-top: 10px; font-size: 13px; line-height: 1.6; }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+        .stat {
+            background: var(--c2); padding: 20px 14px; border-radius: 10px;
+            border: 1px solid var(--border); text-align: center;
+            transition: border-color .2s, transform .2s;
+        }
+        .stat:hover { border-color: var(--hover); transform: translateY(-2px); }
+        .stat .n { color: var(--tw); font-size: 30px; font-weight: 900; }
+        .stat .l { color: #555; font-size: 10px; text-transform: uppercase; letter-spacing: 2px; margin-top: 4px; }
+
+        .links { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 8px; }
+        .btn {
+            background: var(--c2); border: 1px solid var(--border); border-radius: 10px;
+            padding: 14px 18px; text-decoration: none; display: flex; align-items: center; gap: 12px;
+            transition: border-color .2s, transform .2s, background .2s;
+        }
+        .btn:hover { border-color: var(--hover); transform: translateY(-2px); background: var(--c3); }
+        .btn .ico {
+            width: 38px; height: 38px; border-radius: 8px;
+            background: linear-gradient(135deg, #222, #111);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px; color: #fff; font-weight: 700; flex-shrink: 0;
+            border: 1px solid #2a2a2a;
+        }
+        .btn .nm { color: var(--tw); font-size: 13px; font-weight: 600; }
+        .btn .ds { color: #555; font-size: 10px; margin-top: 2px; }
+        .btn .ar { color: #555; font-size: 18px; transition: transform .2s; }
+        .btn:hover .ar { transform: translateX(4px); }
+
+        .footer {
+            text-align: center; padding: 30px; color: #444; border-top: 1px solid var(--border);
+            margin-top: 30px; font-size: 12px;
+        }
+        .footer b { color: #666; }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: #222; border-radius: 2px; }
     </style>
 </head>
 <body>
 
-    <div id="preloader">
-        <div class="rings"><div class="ring"></div><div class="ring"></div><div class="ring"></div><div class="ring"></div><div class="center-dot"></div></div>
-        <div class="preloader-text">налей чай...</div>
-        <div class="tea-cup">🍵</div>
-    </div>
-
     <canvas id="bgCanvas"></canvas>
 
-    <div class="fixed-header" id="fixedHeader">
-        <h2>CRIME_RUNET</h2>
-        <div class="sub">создатель: <b>@Crime_Runet</b> &mdash; сделано на коленях, но с душой</div>
+    <div class="header">
+        <h1>CRIMEMYTH</h1>
+        <div class="sub">creator: <b>@CrimeMyth</b> &mdash; made on the knees, but with soul</div>
     </div>
 
-    <div class="hdr" id="mainHeader">
-        <h1>CRIME_RUNET</h1>
-        <div class="sub">создатель: <b>@Crime_Runet</b> &mdash; сделано на коленях, но с душой</div>
-        <div class="line"></div>
-    </div>
-
-    <div class="ctn">
-        <div class="crd prf">
-            <div class="ava-w"><div class="ava"><img src="https://i.pinimg.com/736x/93/77/33/937733953652517952.jpg" alt="ava" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="fb">CR</div></div></div>
-            <h2>@Crime_Runet</h2>
-            <div class="role">разработчик &bull; создатель &bull; пробив</div>
-            <div class="bio">делаю софт, ботов, инструменты. пробив, osint, автоматизация.<br>вся инфраструктура тут.</div>
+    <div class="container">
+        <div class="card profile">
+            <div class="ava">CM</div>
+            <h2>@CrimeMyth</h2>
+            <div class="role">developer &bull; creator</div>
+            <div class="bio">making tools, bots, scripts. osint, automation, databases.<br>all infrastructure is here.</div>
         </div>
 
-        <div class="crd"><h3>статистика</h3><div class="g4">
-            <div class="st"><div class="n" style="color:#bbb;">10+</div><div class="l">проектов</div></div>
-            <div class="st"><div class="n" style="color:#aaa;">5+</div><div class="l">каналов</div></div>
-            <div class="st"><div class="n">24/7</div><div class="l">на связи</div></div>
-            <div class="st"><div class="n" style="color:#888;">100%</div><div class="l">анонимность</div></div>
-        </div></div>
+        <div class="card">
+            <h3>statistics</h3>
+            <div class="grid">
+                <div class="stat"><div class="n" style="color:#aaa;">10+</div><div class="l">projects</div></div>
+                <div class="stat"><div class="n" style="color:#999;">5+</div><div class="l">channels</div></div>
+                <div class="stat"><div class="n">24/7</div><div class="l">online</div></div>
+                <div class="stat"><div class="n" style="color:#888;">100%</div><div class="l">anonymous</div></div>
+            </div>
+        </div>
 
-        <div class="crd"><h3>основное</h3><div class="g2">
-            <a href="https://t.me/+ToGZc1rn0AxiNzUy" target="_blank" rel="noopener" class="btn"><div class="ico">тг</div><div class="inf"><div class="nm">телеграм канал</div><div class="ds">основной тгк</div></div><div class="ar">&#8594;</div></a>
-            <a href="https://t.me/podnebesny_xyi2" target="_blank" rel="noopener" class="btn"><div class="ico">df</div><div class="inf"><div class="nm">def канал</div><div class="ds">защита и безопасность</div></div><div class="ar">&#8594;</div></a>
-            <a href="https://t.me/+_DqLPs2jxKszOGZk" target="_blank" rel="noopener" class="btn"><div class="ico">кл</div><div class="inf"><div class="nm">клан</div><div class="ds">ссылка на клан</div></div><div class="ar">&#8594;</div></a>
-            <a href="https://t.me/+nhO3S65xGM42M2Jk" target="_blank" rel="noopener" class="btn"><div class="ico">пр</div><div class="inf"><div class="nm">приписка</div><div class="ds">канал приписки</div></div><div class="ar">&#8594;</div></a>
-        </div></div>
+        <div class="card">
+            <h3>main links</h3>
+            <div class="links">
+                <a href="https://t.me/+ToGZc1rn0AxiNzUy" target="_blank" class="btn">
+                    <div class="ico">TG</div>
+                    <div><div class="nm">telegram channel</div><div class="ds">main tgc</div></div>
+                    <div class="ar">&rarr;</div>
+                </a>
+                <a href="https://t.me/podnebesny_xyi2" target="_blank" class="btn">
+                    <div class="ico">DF</div>
+                    <div><div class="nm">def channel</div><div class="ds">security</div></div>
+                    <div class="ar">&rarr;</div>
+                </a>
+                <a href="https://t.me/+_DqLPs2jxKszOGZk" target="_blank" class="btn">
+                    <div class="ico">CL</div>
+                    <div><div class="nm">clan</div><div class="ds">clan link</div></div>
+                    <div class="ar">&rarr;</div>
+                </a>
+                <a href="https://t.me/+nhO3S65xGM42M2Jk" target="_blank" class="btn">
+                    <div class="ico">PR</div>
+                    <div><div class="nm">registration</div><div class="ds">reg channel</div></div>
+                    <div class="ar">&rarr;</div>
+                </a>
+            </div>
+        </div>
 
-        <div class="crd"><h3>соцсети</h3><div class="g2">
-            <a href="https://t.me/fxhhDAA4ygdw2d" target="_blank" rel="noopener" class="btn"><div class="ico">sc</div><div class="inf"><div class="nm">социальные сети</div><div class="ds">все мои соцсети</div></div><div class="ar">&#8594;</div></a>
-        </div></div>
+        <div class="card">
+            <h3>social</h3>
+            <div class="links">
+                <a href="https://t.me/fxhhDAA4ygdw2d" target="_blank" class="btn">
+                    <div class="ico">SC</div>
+                    <div><div class="nm">social networks</div><div class="ds">all my socials</div></div>
+                    <div class="ar">&rarr;</div>
+                </a>
+            </div>
+        </div>
 
-        <div class="crd"><h3>инфраструктура</h3><div class="g2">
-            <a href="https://t.me/+bqQnY2a3gZ1mMzI8" target="_blank" rel="noopener" class="btn"><div class="ico">in</div><div class="inf"><div class="nm">моя инфраструктура</div><div class="ds">проекты и инструменты</div></div><div class="ar">&#8594;</div></a>
-            <a href="https://t.me/ko20112" target="_blank" rel="noopener" class="btn"><div class="ico">гр</div><div class="inf"><div class="nm">гарант сервис</div><div class="ds">безопасные сделки</div></div><div class="ar">&#8594;</div></a>
-        </div></div>
+        <div class="card">
+            <h3>infrastructure</h3>
+            <div class="links">
+                <a href="https://t.me/+bqQnY2a3gZ1mMzI8" target="_blank" class="btn">
+                    <div class="ico">IN</div>
+                    <div><div class="nm">my infrastructure</div><div class="ds">projects & tools</div></div>
+                    <div class="ar">&rarr;</div>
+                </a>
+                <a href="https://t.me/ko20112" target="_blank" class="btn">
+                    <div class="ico">GR</div>
+                    <div><div class="nm">guarantor service</div><div class="ds">safe deals</div></div>
+                    <div class="ar">&rarr;</div>
+                </a>
+            </div>
+        </div>
 
-        <div class="ftr">
-            <div class="dm">&#9670;</div>
-            <p>Crime_Runet &copy; 2025 &mdash; создатель: <b>@Crime_Runet</b></p>
-            <p style="margin-top:6px;font-size:12px;">сделано на коленях, но с душой</p>
+        <div class="footer">
+            <p>CrimeMyth &copy; 2025 &mdash; creator: <b>@CrimeMyth</b></p>
+            <p style="margin-top:4px;font-size:11px;">made on the knees, but with soul</p>
         </div>
     </div>
 
     <script>
-        window.addEventListener('load',()=>{setTimeout(()=>document.getElementById('preloader').classList.add('hidden'),2600)});
-        const cv=document.getElementById('bgCanvas'),cx=cv.getContext('2d',{alpha:true,desynchronized:true});
-        let W,H,t=0,mx=.5,my=.5,tmx=.5,tmy=.5;
-        const ps=[],stars=[],orbs=[],conns=[];
-        function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight}
-        rs();addEventListener('resize',rs);
-        document.addEventListener('mousemove',e=>{tmx=e.clientX/W;tmy=e.clientY/H});
-
-        for(let i=0;i<120;i++)ps.push({x:Math.random()*W,y:Math.random()*H,vy:-Math.random()*.8-.05,vx:(Math.random()-.5)*.5,s:Math.random()*3+.5,o:Math.random()*.4+.05,l:Math.random()*600+200,ml:800});
-        for(let i=0;i<250;i++)stars.push({x:Math.random()*W,y:Math.random()*H,s:Math.random()*2+.2,o:Math.random()*.6+.1,pulse:Math.random()*Math.PI*2,speed:Math.random()*.04+.01});
-        for(let i=0;i<4;i++)orbs.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*250+120,o:Math.random()*.025+.005,dx:(Math.random()-.5)*.25,dy:(Math.random()-.5)*.25});
-        for(let i=0;i<30;i++)conns.push({a:stars[Math.floor(Math.random()*stars.length)],b:stars[Math.floor(Math.random()*stars.length)],maxDist:Math.random()*150+50});
-
-        (function render(ts){
-            t=ts*.001;
-            mx+=(tmx-mx)*.03;my+=(tmy-my)*.03;
-            cx.clearRect(0,0,W,H);
-
-            for(let o of orbs){
-                o.x+=o.dx+(mx-.5)*.5;o.y+=o.dy+(my-.5)*.5;
-                if(o.x<-o.r||o.x>W+o.r)o.dx*=-1;
-                if(o.y<-o.r||o.y>H+o.r)o.dy*=-1;
-                const g=cx.createRadialGradient(o.x,o.y,0,o.x,o.y,o.r);
-                g.addColorStop(0,`rgba(255,255,255,${o.o})`);g.addColorStop(1,'transparent');
-                cx.fillStyle=g;cx.fillRect(o.x-o.r,o.y-o.r,o.r*2,o.r*2);
+        const cv = document.getElementById('bgCanvas'), cx = cv.getContext('2d', { alpha: true, desynchronized: true });
+        let W, H;
+        const ps = [];
+        function rs() { W = cv.width = innerWidth; H = cv.height = innerHeight; }
+        rs(); addEventListener('resize', rs);
+        for (let i = 0; i < 50; i++) ps.push({ x: Math.random()*W, y: Math.random()*H, vy: -Math.random()*.3-.02, s: Math.random()*1.5+.3, o: Math.random()*.15+.03, l: Math.random()*300+100, ml: 400 });
+        (function render() {
+            cx.clearRect(0, 0, W, H);
+            for (let p of ps) {
+                p.y += p.vy; p.l--;
+                if (p.l <= 0 || p.y < -15) { p.y = H+15; p.x = Math.random()*W; p.l = p.ml; }
+                const a = p.o * Math.min(p.l/(p.ml*.2), 1) * Math.min((p.ml-p.l)/(p.ml*.2), 1);
+                cx.beginPath(); cx.arc(p.x, p.y, p.s, 0, Math.PI*2);
+                cx.fillStyle = `rgba(255,255,255,${a})`; cx.fill();
             }
-
-            cx.strokeStyle='rgba(255,255,255,.015)';cx.lineWidth=.5;
-            for(let c of conns){
-                const dx=c.a.x-c.b.x,dy=c.a.y-c.b.y,dist=Math.sqrt(dx*dx+dy*dy);
-                if(dist<c.maxDist&&c.a.o>.15&&c.b.o>.15){cx.globalAlpha=(1-dist/c.maxDist)*.3;cx.beginPath();cx.moveTo(c.a.x,c.a.y);cx.lineTo(c.b.x,c.b.y);cx.stroke()}
-            }
-            cx.globalAlpha=1;
-
-            for(let s of stars){
-                s.o+=Math.sin(t*s.speed+s.pulse)*.004;
-                s.o=Math.max(.03,Math.min(.7,s.o));
-                cx.beginPath();cx.arc(s.x,s.y,s.s,0,Math.PI*2);
-                cx.fillStyle=`rgba(255,255,255,${s.o})`;
-                cx.shadowColor=`rgba(255,255,255,${s.o*.7})`;cx.shadowBlur=s.s*6;
-                cx.fill();
-            }
-            cx.shadowBlur=0;
-
-            for(let p of ps){
-                p.x+=p.vx+Math.sin(t+p.y*.01)*.3;p.y+=p.vy;p.l--;
-                if(p.l<=0||p.y<-60||p.x<-60||p.x>W+60){p.x=Math.random()*W;p.y=H+60;p.vx=(Math.random()-.5)*.5;p.vy=-(Math.random()*1+.2);p.l=p.ml}
-                const a=p.o*Math.min(p.l/(p.ml*.2),1)*Math.min((p.ml-p.l)/(p.ml*.2),1);
-                cx.beginPath();cx.arc(p.x,p.y,p.s,0,Math.PI*2);
-                cx.fillStyle=`rgba(255,255,255,${a})`;cx.shadowColor=`rgba(255,255,255,${a*.6})`;cx.shadowBlur=p.s*5;
-                cx.fill();
-            }
-            cx.shadowBlur=0;
-
             requestAnimationFrame(render);
         })();
-
-        const fh=document.getElementById('fixedHeader'),mh=document.getElementById('mainHeader');
-        let mhb=0;
-        function uh(){mhb=mh.offsetTop+mh.offsetHeight}
-        uh();addEventListener('resize',uh);
-        addEventListener('scroll',()=>{fh.classList.toggle('visible',scrollY>mhb-100)});
     </script>
 </body>
 </html>
